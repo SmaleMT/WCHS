@@ -180,7 +180,7 @@ def calculate_density(x_train, k):
     densities = np.array(densities)
     max_density = np.max(densities)
     min_density = np.min(densities)
-    normalized_densities = (densities - min_density) / (max_density - min_density + eps)  # 归一化密度
+    normalized_densities = (densities - min_density) / (max_density - min_density + eps)
 
     return normalized_densities
 
@@ -227,7 +227,7 @@ def Information_entropy(k, same):
     if k == 0:
         information_entropy = 0
     elif same / k < 0.5:
-        information_entropy = - prob_same * math.log(prob_same) - prob_diff * math.log(prob_diff)  # 信息熵
+        information_entropy = - prob_same * math.log(prob_same) - prob_diff * math.log(prob_diff)
         information_entropy = 2 * (-math.log(0.5)) - information_entropy
     else:
         information_entropy = - prob_same * math.log(prob_same) - prob_diff * math.log(prob_diff)
@@ -267,3 +267,4 @@ def w_Information_entropy(train_data, k):
         Entropy.append(entropy)
 
     return Entropy
+
