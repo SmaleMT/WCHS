@@ -13,11 +13,13 @@ Filtering: Retains top-scores synthetic samples
 
 Installation
 Requirements
+```text
 Python == 3.10
 numpy == 1.24.4
 scikit-learn == 1.3.2
 pandas == 2.0.3
 matplotlib == 3.7.5
+```
 
 git clone https://github.com/SmaleMT/WCHS.git
 cd WCHS
@@ -35,8 +37,7 @@ X, y = make_classification(
     weights=[0.9, 0.1],  # 90% negative, 10% positive
     random_state=42
 )
-# Apply WCHS
-result = evaluate_dataset(X,y)
+evaluate_dataset(X,y)
 
 Core Components
 1. KPCA Dimensionality Reduction
@@ -47,7 +48,7 @@ WCHS is applied to balance dataset.
 Directory Structure
 WCHS/
 ├── _Datasets.zip    # datasets
-├── data-process.py  # Data process: Split, Normalize, KPCA, evaluate result
+├── data-process.py  # Data process: Split, Normalize, KPCA, evaluate
 ├── WCHS.py          # Undersampling, oversampling, filtering
 └── README.md
 
