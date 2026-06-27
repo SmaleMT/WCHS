@@ -3,10 +3,11 @@ WCHS is a Python implementation of the Weighted Contribution-based Hybrid Sampli
 
 # Features
 KPCA-based dimensionality reduction: Reduces high-dimensional microbial data while preserving nonlinear structures
+
+# Hybrid sampling:
 Dual-stage contribution assessment:
 Sampling stage: Evaluates real samples using weighted entropy (WInf) and reverse nearest neighbor entropy with local density (DNoi)
 Filtering stage: Re-evaluates synthetic candidates using class purity (WInf) and proximity to the majority class (DNoi)
-# Hybrid sampling:
 Undersampling: Retains high-contribution majority samples
 Oversampling: Generates synthetic candidates from high-contribution minority samples
 Filtering: Retains top-scores synthetic samples
@@ -21,6 +22,7 @@ pandas == 2.0.3
 matplotlib == 3.7.5
 ```
 
+## Installtion
 ```bash
 git clone https://github.com/SmaleMT/WCHS.git
 cd WCHS
@@ -52,7 +54,7 @@ WCHS is applied to balance dataset.
 # Directory Structure
 ```plaintext
 WCHS/
-├── _Datasets.zip    # datasets
+├── Datasets.zip    # datasets
 ├── data-process.py  # Data process: Split, Normalize, KPCA, evaluate
 ├── WCHS.py          # Undersampling, oversampling, filtering
 └── README.md
