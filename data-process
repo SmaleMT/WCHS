@@ -1,18 +1,17 @@
+import numpy as np
 import pandas as pd
+from imblearn.metrics import geometric_mean_score
 from sklearn import preprocessing
 from sklearn.decomposition import KernelPCA
+from sklearn.metrics import precision_recall_fscore_support, fbeta_score, roc_auc_score, average_precision_score, \
+    confusion_matrix
 from sklearn.model_selection import train_test_split
-
+from sklearn.neural_network import MLPClassifier
 from WCHS import WCHS
 
 
-def evaluate_dataset(file_path):
-    data = pd.read_excel(file_path, sheet_name=0, header=None)
+def evaluate_dataset(X, y):
     dataset_params = {'k': 5, 'lamba1': 0.5, 'lamba2': 3}  # set dataset_params according to the dataset
-
-    # 1. split
-    x = data.iloc[:, 1:]
-    y = data.iloc[:, 0]
 
     # Ensure binary labels are 0 and 1
     unique_labels = y.unique()
@@ -24,8 +23,12 @@ def evaluate_dataset(file_path):
     if pos_count > neg_count:
         y = y.replace({0: 1, 1: 0})
 
+    # 1. split
     x_train, x_test, y_train, y_test = \
         train_test_split(x, y, test_size=0.2, stratify=y, random_state=0)  # random_state = random_state
+    count_0_train = np.sum(y_train == 0)
+    count_1_train = np.sum(y_train == 1)
+    IR_train = count_0_train / count_1_train
 
     # 2. Normalize  # [0,1]
     standard_train_x = preprocessing.MinMaxScaler()
@@ -41,10 +44,27 @@ def evaluate_dataset(file_path):
     x_train = pd.DataFrame(x_train)
     x_test = pd.DataFrame(x_test)
 
-    # 4.
+    # 4. sampling
     x_train, y_train = WCHS(x_train, y_train, dataset_params)
 
-    return x_train, y_train, x_test, y_test
+    # 5. classifier
+    clf = MLPClassifier(learning_rate_init=0.005, max_iter=200, random_state=42)
+    clf.fit(x_train, y_train)
+    y_pred = clf.predict(x_test)
+    y_preda = clf.predict_proba(x_test)[:, 1]
+    _, recall, _, _ = precision_recall_fscore_support(y_test, y_pred, labels=[0, 1], average=None, zero_division=0)
+    f2 = fbeta_score(y_test, y_pred, beta=2, pos_label=1, zero_division=0)
+    g_mean = geometric_mean_score(y_test, y_pred)
+    roc_auc = roc_auc_score(y_test, y_preda)  # ROC-AUC
+    pr_auc = average_precision_score(y_test, y_preda)  # PR-AUC
+    tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
+    cost = 1 * fp + IR_train * fn
 
-
-
+if __name__ == "__main__":
+    X, y = make_classification(
+        n_samples=300,
+        n_features=60,
+        weights=[0.9, 0.1], 
+        random_state=42
+    )
+    evaluate_dataset(X, y)
